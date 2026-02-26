@@ -3,9 +3,20 @@
     "id": "src_rss_reuters_world",
     "source_type": "rss",
     "display_name": "Reuters World RSS",
-    "handle_or_identifier": "https://www.reuters.com/world/rss",
+    "handle_or_identifier": "https://feeds.reuters.com/Reuters/worldNews",
+    "url": "https://www.reuters.com/world/",
     "enabled": true,
     "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 300
+  },
+  {
+    "id": "src_rss_ap_top",
+    "source_type": "rss",
+    "display_name": "AP Top News RSS",
+    "handle_or_identifier": "https://feeds.apnews.com/apf-topnews",
+    "url": "https://apnews.com/",
+    "enabled": true,
+    "category_hints": ["breaking", "us"],
     "poll_interval_seconds": 300
   },
   {
@@ -13,33 +24,77 @@
     "source_type": "reddit",
     "display_name": "r/worldnews",
     "handle_or_identifier": "worldnews",
+    "url": "https://www.reddit.com/r/worldnews/",
     "enabled": true,
     "category_hints": ["world", "breaking"],
     "poll_interval_seconds": 180
+  },
+  {
+    "id": "src_reddit_technology",
+    "source_type": "reddit",
+    "display_name": "r/technology",
+    "handle_or_identifier": "technology",
+    "url": "https://www.reddit.com/r/technology/",
+    "enabled": true,
+    "category_hints": ["ai-tech"],
+    "poll_interval_seconds": 180
+  },
+  {
+    "id": "src_youtube_openai",
+    "source_type": "youtube",
+    "display_name": "OpenAI YouTube",
+    "handle_or_identifier": "https://www.youtube.com/feeds/videos.xml?channel_id=UCSHZKyawb77ixDdsGog4iWA",
+    "url": "https://www.youtube.com/@OpenAI",
+    "enabled": true,
+    "category_hints": ["ai-tech"],
+    "poll_interval_seconds": 900
   },
   {
     "id": "src_x_example",
     "source_type": "twitter",
     "display_name": "Example X Handle",
     "handle_or_identifier": "example_handle",
+    "url": "https://x.com/example_handle",
     "enabled": false,
     "category_hints": ["ai-tech"],
     "poll_interval_seconds": 300
   },
   {
-    "id": "src_youtube_example",
-    "source_type": "youtube",
-    "display_name": "Example YouTube Channel",
-    "handle_or_identifier": "@exampleChannel",
+    "id": "src_x_indianexpress",
+    "source_type": "twitter",
+    "display_name": "Indian Express",
+    "handle_or_identifier": "IndianExpress",
+    "url": "https://x.com/IndianExpress",
     "enabled": false,
-    "category_hints": ["ai-tech"],
-    "poll_interval_seconds": 900
+    "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 300
+  },
+  {
+    "id": "src_x_bbcbreaking",
+    "source_type": "twitter",
+    "display_name": "BBC Breaking News",
+    "handle_or_identifier": "BBCBreaking",
+    "url": "https://x.com/BBCBreaking",
+    "enabled": false,
+    "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 300
+  },
+  {
+    "id": "src_x_ndtv",
+    "source_type": "twitter",
+    "display_name": "NDTV",
+    "handle_or_identifier": "ndtv",
+    "url": "https://x.com/ndtv",
+    "enabled": false,
+    "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 300
   },
   {
     "id": "src_discord_example",
     "source_type": "discord",
     "display_name": "Example Discord Server",
     "handle_or_identifier": "server:example",
+    "url": "https://discord.com/channels/example",
     "enabled": false,
     "category_hints": ["finance"],
     "poll_interval_seconds": 120

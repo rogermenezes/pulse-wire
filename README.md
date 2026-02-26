@@ -18,6 +18,23 @@ First end-to-end scaffold for PulseWire using a split architecture:
   - `GET /v1/stories/{story_id}`
 - Admin FastAPI endpoint:
   - `POST /v1/admin/reingest` (Bearer token protected)
+- Redis-backed queueing (RQ) with a worker process (`backend/worker.py`) for ingestion pipeline execution.
+- Postgres-backed persistence for:
+  - `sources`
+  - `ingestion_runs`
+  - `raw_ingested_items`
+  - `source_items`
+  - `story_clusters`
+  - `cluster_items`
+  - `summaries`
+  - `categories`
+  - `story_tags`
+- Ingestion adapters:
+  - RSS
+  - Reddit
+  - YouTube
+  - Placeholder stubs for X/Twitter and Discord
+- Clustering + summarization pipeline hooks (OpenAI/Anthropic + deterministic fallback provider).
 - Next.js homepage and story detail page consuming FastAPI.
 - Dockerfiles for both frontend and backend.
 - Root `docker-compose.yml` with frontend, backend, Postgres, and Redis.
@@ -41,7 +58,15 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
 
-3. Run frontend (new terminal):
+3. Run worker (new terminal):
+
+```bash
+cd backend
+source .venv/bin/activate
+python worker.py
+```
+
+4. Run frontend (new terminal):
 
 ```bash
 cd frontend
@@ -49,7 +74,7 @@ npm install
 npm run dev
 ```
 
-4. Open:
+5. Open:
 - Frontend: http://localhost:3000
 - Backend docs: http://localhost:8000/docs
 
@@ -68,5 +93,7 @@ Services:
 
 ## Notes
 
-- This is intentionally the first scaffold milestone; ingestion, clustering, embeddings, DB persistence, migrations, workers, and summarization pipelines are stubbed for the next iteration.
+- Ingestion/clustering/summarization now run through the admin reingest entrypoint (`POST /v1/admin/reingest`) and queue-backed worker.
+- Twitter and Discord adapters remain placeholders (by design in this milestone).
+- OpenAI/Anthropic providers are implemented as hooks; without API keys they fall back to deterministic summaries.
 - Source onboarding is configuration-first and manually curated, per product/stack specs.

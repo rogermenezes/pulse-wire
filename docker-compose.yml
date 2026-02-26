@@ -21,8 +21,39 @@ services:
       APP_ENV: ${APP_ENV:-development}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
       API_ADMIN_TOKEN: ${API_ADMIN_TOKEN:-change-me}
-      DATABASE_URL: postgresql://${POSTGRES_USER:-pulsewire}:${POSTGRES_PASSWORD:-pulsewire}@postgres:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-pulsewire}
-      REDIS_URL: redis://redis:${REDIS_PORT:-6379}/0
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-pulsewire}:${POSTGRES_PASSWORD:-pulsewire}@postgres:5432/${POSTGRES_DB:-pulsewire}
+      REDIS_URL: redis://redis:6379/0
+      REDDIT_USER_AGENT: ${REDDIT_USER_AGENT:-pulsewire-bot/0.1}
+      INGESTION_TIMEOUT_SECONDS: ${INGESTION_TIMEOUT_SECONDS:-15}
+      INGESTION_DEFAULT_LIMIT: ${INGESTION_DEFAULT_LIMIT:-25}
+      CLUSTER_SIMILARITY_THRESHOLD: ${CLUSTER_SIMILARITY_THRESHOLD:-0.28}
+      CLUSTER_WINDOW_HOURS: ${CLUSTER_WINDOW_HOURS:-72}
+      SUMMARIZATION_PROVIDER: ${SUMMARIZATION_PROVIDER:-stub}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-3-5-haiku-latest}
+    depends_on:
+      - postgres
+      - redis
+
+  worker:
+    build:
+      context: ./backend
+    command: ["python", "worker.py"]
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-pulsewire}:${POSTGRES_PASSWORD:-pulsewire}@postgres:5432/${POSTGRES_DB:-pulsewire}
+      REDIS_URL: redis://redis:6379/0
+      REDDIT_USER_AGENT: ${REDDIT_USER_AGENT:-pulsewire-bot/0.1}
+      INGESTION_TIMEOUT_SECONDS: ${INGESTION_TIMEOUT_SECONDS:-15}
+      INGESTION_DEFAULT_LIMIT: ${INGESTION_DEFAULT_LIMIT:-25}
+      CLUSTER_SIMILARITY_THRESHOLD: ${CLUSTER_SIMILARITY_THRESHOLD:-0.28}
+      CLUSTER_WINDOW_HOURS: ${CLUSTER_WINDOW_HOURS:-72}
+      SUMMARIZATION_PROVIDER: ${SUMMARIZATION_PROVIDER:-stub}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4o-mini}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-claude-3-5-haiku-latest}
     depends_on:
       - postgres
       - redis
