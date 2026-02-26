@@ -1,0 +1,47 @@
+[
+  {
+    "id": "src_rss_reuters_world",
+    "source_type": "rss",
+    "display_name": "Reuters World RSS",
+    "handle_or_identifier": "https://www.reuters.com/world/rss",
+    "enabled": true,
+    "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 300
+  },
+  {
+    "id": "src_reddit_worldnews",
+    "source_type": "reddit",
+    "display_name": "r/worldnews",
+    "handle_or_identifier": "worldnews",
+    "enabled": true,
+    "category_hints": ["world", "breaking"],
+    "poll_interval_seconds": 180
+  },
+  {
+    "id": "src_x_example",
+    "source_type": "twitter",
+    "display_name": "Example X Handle",
+    "handle_or_identifier": "example_handle",
+    "enabled": false,
+    "category_hints": ["ai-tech"],
+    "poll_interval_seconds": 300
+  },
+  {
+    "id": "src_youtube_example",
+    "source_type": "youtube",
+    "display_name": "Example YouTube Channel",
+    "handle_or_identifier": "@exampleChannel",
+    "enabled": false,
+    "category_hints": ["ai-tech"],
+    "poll_interval_seconds": 900
+  },
+  {
+    "id": "src_discord_example",
+    "source_type": "discord",
+    "display_name": "Example Discord Server",
+    "handle_or_identifier": "server:example",
+    "enabled": false,
+    "category_hints": ["finance"],
+    "poll_interval_seconds": 120
+  }
+]
