@@ -40,6 +40,36 @@
     "poll_interval_seconds": 180
   },
   {
+    "id": "src_reddit_investing",
+    "source_type": "reddit",
+    "display_name": "r/investing",
+    "handle_or_identifier": "investing",
+    "url": "https://www.reddit.com/r/investing/",
+    "enabled": true,
+    "category_hints": ["finance"],
+    "poll_interval_seconds": 180
+  },
+  {
+    "id": "src_reddit_stockmarket",
+    "source_type": "reddit",
+    "display_name": "r/StockMarket",
+    "handle_or_identifier": "StockMarket",
+    "url": "https://www.reddit.com/r/StockMarket/",
+    "enabled": true,
+    "category_hints": ["finance"],
+    "poll_interval_seconds": 180
+  },
+  {
+    "id": "src_reddit_finance",
+    "source_type": "reddit",
+    "display_name": "r/finance",
+    "handle_or_identifier": "finance",
+    "url": "https://www.reddit.com/r/finance/",
+    "enabled": true,
+    "category_hints": ["finance"],
+    "poll_interval_seconds": 180
+  },
+  {
     "id": "src_youtube_openai",
     "source_type": "youtube",
     "display_name": "OpenAI YouTube",

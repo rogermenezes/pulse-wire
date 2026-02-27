@@ -7,7 +7,7 @@ from sqlalchemy import desc, select
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
-from app.db.models import ClusterItem, SourceItem, StoryCluster
+from app.db.models import Category, ClusterItem, Source, SourceItem, StoryCluster
 from app.services.clustering.clusterer import cluster_similarity
 
 
@@ -19,6 +19,18 @@ def _slugify(title: str) -> str:
 def _ranking_score(cluster: StoryCluster) -> float:
     age_hours = max((datetime.now(timezone.utc) - cluster.last_updated_at).total_seconds() / 3600, 1)
     return (cluster.item_count * 1.7 + cluster.source_count * 2.2) / age_hours
+
+
+def _resolve_primary_category_id(db: Session, item: SourceItem) -> str | None:
+    source = db.get(Source, item.source_id)
+    if not source:
+        return None
+
+    for hint in source.category_hints or []:
+        category = db.scalar(select(Category).where(Category.slug == hint))
+        if category:
+            return category.id
+    return None
 
 
 def assign_item_to_cluster(db: Session, item: SourceItem) -> StoryCluster:
@@ -44,6 +56,7 @@ def assign_item_to_cluster(db: Session, item: SourceItem) -> StoryCluster:
             slug=_slugify(item.title),
             headline=item.title,
             short_headline=item.title[:120],
+            primary_category_id=_resolve_primary_category_id(db, item),
             status="breaking",
             representative_item_id=item.id,
             first_seen_at=item.published_at,
@@ -75,6 +88,9 @@ def assign_item_to_cluster(db: Session, item: SourceItem) -> StoryCluster:
 
     related_items = db.scalars(select(SourceItem).where(SourceItem.id.in_(source_item_ids))).all() if source_item_ids else []
     sources = {row.source_id for row in related_items}
+
+    if chosen.primary_category_id is None:
+        chosen.primary_category_id = _resolve_primary_category_id(db, item)
 
     chosen.item_count = len(cluster_items)
     chosen.source_count = len(sources)

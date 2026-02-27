@@ -54,6 +54,11 @@ def list_stories(
     limit: int = Query(default=20, ge=1, le=50),
     db: Session = Depends(get_db),
 ) -> StoryListResponse:
+    if category and category.lower() == "breaking":
+        cards = get_story_cards(db, limit=limit, status="breaking")
+        if cards:
+            return StoryListResponse(items=cards)
+
     cards = get_story_cards(db, limit=limit, category_slug=category)
     if cards:
         return StoryListResponse(items=cards)
