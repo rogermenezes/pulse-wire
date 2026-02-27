@@ -209,3 +209,15 @@ __marimo__/
 # Node/Next.js
 node_modules/
 .next/
+
+# Terraform local artifacts
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+infra/terraform/terraform.tfvars

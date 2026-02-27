@@ -1,0 +1,45 @@
+project_id  = "your-gcp-project-id"
+region      = "us-central1"
+environment = "prod"
+
+frontend_image = "us-central1-docker.pkg.dev/your-gcp-project-id/pulsewire-prod-frontend/frontend:latest"
+backend_image  = "us-central1-docker.pkg.dev/your-gcp-project-id/pulsewire-prod-backend/backend:latest"
+worker_image   = "us-central1-docker.pkg.dev/your-gcp-project-id/pulsewire-prod-worker/worker:latest"
+
+frontend_service_name = "pulsewire-web"
+backend_service_name  = "pulsewire-api"
+worker_job_name       = "pulsewire-worker"
+
+frontend_public = true
+backend_public  = true
+worker_enabled  = true
+
+frontend_env_vars = {
+  NEXT_PUBLIC_API_BASE_URL = "https://pulsewire-api-xxxxx-uc.a.run.app"
+}
+
+backend_env_vars = {
+  APP_ENV           = "production"
+  FRONTEND_ORIGIN   = "https://pulsewire-web-xxxxx-uc.a.run.app"
+  SUMMARIZATION_PROVIDER = "openai"
+  REDDIT_USER_AGENT = "pulsewire-prod/1.0"
+}
+
+# Bind env vars to pre-created secret ids from module.secret_manager
+backend_secret_env = {
+  DATABASE_URL      = "database-url"
+  API_ADMIN_TOKEN   = "api-admin-token"
+  OPENAI_API_KEY    = "openai-api-key"
+  ANTHROPIC_API_KEY = "anthropic-api-key"
+}
+
+worker_secret_env = {
+  DATABASE_URL      = "database-url"
+  OPENAI_API_KEY    = "openai-api-key"
+  ANTHROPIC_API_KEY = "anthropic-api-key"
+}
+
+labels = {
+  team = "news-platform"
+  cost_center = "eng"
+}
