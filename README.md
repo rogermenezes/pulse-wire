@@ -97,3 +97,92 @@ Services:
 - Twitter and Discord adapters remain placeholders (by design in this milestone).
 - OpenAI/Anthropic providers are implemented as hooks; without API keys they fall back to deterministic summaries.
 - Source onboarding is configuration-first and manually curated, per product/stack specs.
+
+## Google Cloud Deployment Notes
+
+This repository is prepared for a Cloud Run split deployment:
+
+- `frontend/` -> Cloud Run service (Next.js)
+- `backend/` -> Cloud Run service (FastAPI)
+- `backend/job_runner.py` -> Cloud Run Job (one-shot ingestion task)
+
+### Cloud Run startup behavior
+
+- Frontend container uses Next standalone output and honors Cloud Run `PORT`.
+- Backend container binds `0.0.0.0` and uses `${PORT}`.
+- Worker/job image can run:
+  - long-lived worker: `python worker.py`
+  - one-shot job: `python job_runner.py`
+
+### Required env vars in Cloud Run
+
+At minimum configure:
+
+- `APP_ENV=production`
+- `DATABASE_URL` (Cloud SQL PostgreSQL DSN)
+- `REDIS_URL` (Memorystore Redis endpoint)
+- `NEXT_PUBLIC_API_BASE_URL` (frontend -> backend URL)
+- `API_ADMIN_TOKEN`
+- `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` (if using provider APIs)
+- `GCP_PROJECT_ID`, `GCP_REGION`, `GCS_BUCKET_NAME` (optional but recommended)
+
+### Example build + deploy flow
+
+```bash
+# Set vars
+export PROJECT_ID="your-gcp-project"
+export REGION="us-central1"
+export REPO="pulsewire"
+export TAG="$(git rev-parse --short HEAD)"
+
+# Create Artifact Registry repo once
+gcloud artifacts repositories create "$REPO" \
+  --repository-format=docker \
+  --location="$REGION" \
+  --project="$PROJECT_ID"
+
+# Build and push frontend image
+gcloud builds submit ./frontend \
+  --tag "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/frontend:${TAG}" \
+  --project "$PROJECT_ID"
+
+# Build and push backend image
+gcloud builds submit ./backend \
+  --tag "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/backend:${TAG}" \
+  --project "$PROJECT_ID"
+```
+
+Deploy backend Cloud Run service:
+
+```bash
+gcloud run deploy pulsewire-api \
+  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/backend:${TAG}" \
+  --region "$REGION" \
+  --platform managed \
+  --allow-unauthenticated \
+  --set-env-vars "APP_ENV=production"
+```
+
+Deploy frontend Cloud Run service:
+
+```bash
+gcloud run deploy pulsewire-web \
+  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/frontend:${TAG}" \
+  --region "$REGION" \
+  --platform managed \
+  --allow-unauthenticated
+```
+
+Create/update Cloud Run Job for ingestion:
+
+```bash
+gcloud run jobs create pulsewire-ingest \
+  --image "${REGION}-docker.pkg.dev/${PROJECT_ID}/${REPO}/backend:${TAG}" \
+  --region "$REGION" \
+  --command python \
+  --args job_runner.py \
+  --set-env-vars "JOB_TYPE=ingestion,SOURCE_TYPES=reddit,rss"
+
+# Run it on demand
+gcloud run jobs execute pulsewire-ingest --region "$REGION"
+```

@@ -119,6 +119,26 @@ cd /Users/rmenezes/code/pulse-wire
 docker compose exec postgres psql -U pulsewire -d pulsewire
 ```
 
+### Connect from host machine (local `psql` client)
+
+If you have `psql` installed on your host, you can connect directly to the Dockerized Postgres via published port `5432`:
+
+```bash
+psql "postgresql://pulsewire:pulsewire@localhost:5432/pulsewire"
+```
+
+Equivalent expanded form:
+
+```bash
+PGPASSWORD=pulsewire psql -h localhost -p 5432 -U pulsewire -d pulsewire
+```
+
+Quick connection test:
+
+```bash
+PGPASSWORD=pulsewire psql -h localhost -p 5432 -U pulsewire -d pulsewire -c "SELECT 1;"
+```
+
 Common `psql` commands:
 
 ```sql

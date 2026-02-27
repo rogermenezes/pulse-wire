@@ -5,9 +5,10 @@ services:
     build:
       context: ./frontend
     ports:
-      - "3000:3000"
+      - "${WEB_PORT:-3000}:3000"
     environment:
       NEXT_PUBLIC_API_BASE_URL: ${NEXT_PUBLIC_API_BASE_URL:-http://localhost:8000}
+      PORT: 3000
     depends_on:
       - backend
 
@@ -15,12 +16,13 @@ services:
     build:
       context: ./backend
     ports:
-      - "8000:8000"
+      - "${API_PORT:-8000}:8000"
     environment:
       APP_NAME: ${APP_NAME:-PulseWire API}
       APP_ENV: ${APP_ENV:-development}
       FRONTEND_ORIGIN: ${FRONTEND_ORIGIN:-http://localhost:3000}
       API_ADMIN_TOKEN: ${API_ADMIN_TOKEN:-change-me}
+      PORT: 8000
       DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-pulsewire}:${POSTGRES_PASSWORD:-pulsewire}@postgres:5432/${POSTGRES_DB:-pulsewire}
       REDIS_URL: redis://redis:6379/0
       REDDIT_USER_AGENT: ${REDDIT_USER_AGENT:-pulsewire-bot/0.1}
